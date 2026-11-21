@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>Mando</title><link rel="stylesheet" href="style.css">
+<style>#app{padding:3vh 5vw}h1{font-size:9vw}p{font-size:5vw}
+#bar{width:80vw;height:2vh;background:#1c2133;border-radius:9px;overflow:hidden}#bar i{display:block;height:100%;width:0;background:#ffd23f;transition:width 10s linear}
+.sc{font-size:9vw;font-weight:800;min-height:34vh;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .6s}.sc.on{opacity:1}
+button{font:inherit;font-weight:900;border:0;border-radius:5vw;color:#111;touch-action:manipulation}
+#go{font-size:8vw;padding:3vh 9vw;background:#5ee07a}#go:disabled{background:#333;color:#888}
+#tap{width:80vw;height:80vw;max-height:60vh;border-radius:50%;font-size:10vw}
+#ch{display:grid;grid-template-columns:1fr 1fr;gap:3vw;width:92vw;height:70vh}#ch button{font-size:12vw}</style></head>
+<body><div id="app"></div><script>
+const R=new URLSearchParams(location.search).get('r')||'',app=document.getElementById('app');
+const id=sessionStorage.pid||(sessionStorage.pid=Math.random().toString(36).slice(2,10));
+const send=m=>fetch(`/send?r=${R}&role=pad&id=${id}`,{method:'POST',body:JSON.stringify(m),keepalive:true}).catch(()=>{});
+const S=["😩 ¿Cansad@ de que haya 10 amigos y solo 2 mandos?","📱 Ahora tu móvil ES el mando","🎮 Escanea, conecta y juega hasta 4 personas","🏆 6 minijuegos. 1 campeón."];
+app.innerHTML=`<div class="sc" id="sc"></div><div id="bar"><i></i></div><button id="go" disabled>Mira el video…</button>`;
+const sc=document.getElementById('sc'),go=document.getElementById('go');
+S.forEach((t,k)=>{setTimeout(()=>{sc.classList.remove('on');setTimeout(()=>{sc.textContent=t;sc.classList.add('on')},300)},k*2500)});
+setTimeout(()=>document.querySelector('#bar i').style.width='100%',50);
+setTimeout(()=>{go.disabled=false;go.textContent='▶ EMPEZAR'},10300);
+go.onclick=connect;
+let me={name:'',color:'#ffd23f'};
+function connect(){
+  app.innerHTML='<h1>Conectando…</h1>';
+  const es=new EventSource(`/events?r=${R}&role=pad&id=${id}`);
+  es.onmessage=e=>{const m=JSON.parse(e.data);
+    if(m.type==='full'){es.close();app.innerHTML='<h1>😕 Sala llena</h1><p>Máximo 4 jugadores</p>'}
+    else if(m.type==='you'){me=m;if(!document.getElementById('ch')&&!document.getElementById('tap'))wait('Conectado ✅')}
+    else if(m.type==='mode')render(m)};
+}
+function wait(t){app.innerHTML=`<h1 style="color:${me.color}">${me.name}</h1><p>${t}</p>`}
+function render(m){
+  if(m.mode==='wait')return wait(m.t||'');
+  if(m.mode==='tap'){app.innerHTML=`<button id="tap" style="background:${m.c||me.color}">${m.l||'TOCA'}</button>`;
+    document.getElementById('tap').onpointerdown=()=>{send({type:'press'});navigator.vibrate&&navigator.vibrate(15)}}
+  if(m.mode==='choice'){app.innerHTML=`<div id="ch" style="${m.opts.length<3?'grid-template-columns:1fr':''}">${m.opts.map((o,k)=>`<button style="background:${o.c}" data-k="${k}">${o.l}</button>`).join('')}</div>`;
+    document.querySelectorAll('#ch button').forEach(b=>b.onpointerdown=()=>{send({type:'press',v:+b.dataset.k});navigator.vibrate&&navigator.vibrate(15)})}}
+</script></body></html>

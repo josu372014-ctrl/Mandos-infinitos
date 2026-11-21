@@ -1,0 +1,10 @@
+*{box-sizing:border-box}html,body{height:100%;margin:0;background:#10131f;color:#fff;font-family:system-ui,sans-serif;text-align:center;overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vh;padding:2vh 3vw}
+h1{margin:0;font-size:5.5vw}p{font-size:2.6vw;margin:0}#big{font-size:16vw;font-weight:900;line-height:1}
+.bd{display:flex;flex-wrap:wrap;gap:1.5vw;justify-content:center}
+.chip{padding:1.2vw 2.4vw;border-radius:99px;font-size:3vw;font-weight:800;color:#111;display:flex;gap:1.2vw;align-items:center}
+.chip b{background:#111;color:#fff;border-radius:99px;padding:0 1.2vw}
+#qr{background:#fff;padding:1.2vw;border-radius:1.5vw;display:inline-block}
+.row{display:flex;gap:4vw;align-items:center;justify-content:center}
+.code{font-size:6vw;font-weight:900;letter-spacing:.5vw;color:#ffd23f}
+small{opacity:.7;font-size:1.8vw}

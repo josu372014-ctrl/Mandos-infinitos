@@ -1,0 +1,6 @@
+MANDOS INFINITOS
+1) Necesita Node.js (>=16). Local: npm start  -> http://localhost:3000
+2) Publicar: sube esta carpeta a Render.com / Railway / Glitch / Replit como "Web Service" Node.
+   Start command: npm start   (no hay dependencias que instalar)
+3) Abre la URL en la TV (navegador del TV o Chromecast/AirPlay). Aparece el QR; los móviles lo escanean.
+Importante: necesita servidor Node (no sirve en hosting estático tipo GitHub Pages). Usa HTTPS (lo dan por defecto).
